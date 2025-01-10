@@ -8,15 +8,17 @@ class Character():
         self.width=width
         self.height=height
         self.scale=scale
+        self.angle=0
+        self.flippedX=False
 
         ## Player States
         self.playerState="MOVING"
-        self.flippedX=False
         self.rotatedTo=2 # 1-> Left, 2->Right, -1->Up, -2->Down
         
         ## Player Images/Sprites
         self.spriteSheet=pg.image.load(sheet).convert_alpha()
         self.og_image=pg.Surface((width,height),pg.SRCALPHA).convert_alpha()
+        self.rect=pg.Rect(x,y,width*scale,height*scale)
 
         ## Counters for animations
         self.spriteIndex=0
@@ -39,41 +41,13 @@ class Character():
             self.og_image.blit(self.spriteSheet,(0,0),(self.spriteIndex*self.width,0,self.width,self.height))
 
         self.image=pg.transform.scale(self.og_image,(self.width*self.scale,self.height*self.scale))
-        return self.image,(self.x,self.y)
+        self.rect.x=self.x
+        self.rect.y=self.y
 
-    def rotate(self,side):
-        if side==1:
-            if self.rotatedTo==2:
-                self.image=pg.transform.flip(self.og_image,True,False)
-            elif self.rotatedTo==-1:
-                self.image=pg.transform.rotate(self.og_image,90)
-            elif self.rotatedTo==-2:
-                self.image=pg.transform.rotate(self.og_image,-90)
-            self.rotatedTo=1
-        elif side==2:
-            if self.rotatedTo==1:
-                self.flippedX=True
-            elif self.rotatedTo==-1:
-                self.image=pg.transform.rotate(self.og_image,-90)
-            elif self.rotatedTo==-2:
-                self.image=pg.transform.rotate(self.og_image,90)
-            self.rotatedTo=2
-
-        elif side==-1:
-            if self.rotatedTo==1:
-                self.image=pg.transform.rotate(self.og_image,-90)
-            elif self.rotatedTo==2:
-                self.image=pg.transform.rotate(self.og_image,90)
-            elif self.rotatedTo==-2:
-                self.image=pg.transform.flip(self.og_image,True,False)
-            self.rotatedTo=-1
-
-        elif side==-2:
-            if self.rotatedTo==1:
-                self.image=pg.transform.rotate(self.og_image,90)
-            elif self.rotatedTo==2:
-                self.image=pg.transform.rotate(self.og_image,-90)
-            elif self.rotatedTo==-1:
-                self.image=pg.transform.flip(self.og_image,True,False)
-            self.rotatedTo=-2
-
+    def rotate(self,angle):
+        self.angle=angle
+    def flip(self,flipBool):
+        self.flippedX = flipBool
+    def render(self,surf):
+        self.image=pg.transform.scale(pg.transform.flip(pg.transform.rotate(self.og_image,self.angle),self.flippedX,False),(self.width*self.scale,self.height*self.scale))
+        surf.blit(self.image,(self.x,self.y))
