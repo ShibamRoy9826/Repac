@@ -1,10 +1,9 @@
 import pygame as pg
 
 class Character():
-    def __init__(self,screen,sheet,x,y,width,height,scale,frameChange,totalFrames):
+    def __init__(self,sheet,x,y,width,height,scale,frameChange,totalFrames):
         self.x=x
         self.y=y
-        self.screen=screen
         self.width=width
         self.height=height
         self.scale=scale
@@ -40,7 +39,6 @@ class Character():
             self.image=self.og_image.fill((0,0,0,0))
             self.og_image.blit(self.spriteSheet,(0,0),(self.spriteIndex*self.width,0,self.width,self.height))
 
-        self.image=pg.transform.scale(self.og_image,(self.width*self.scale,self.height*self.scale))
         self.rect.x=self.x
         self.rect.y=self.y
 
@@ -51,3 +49,23 @@ class Character():
     def render(self,surf):
         self.image=pg.transform.scale(pg.transform.flip(pg.transform.rotate(self.og_image,self.angle),self.flippedX,False),(self.width*self.scale,self.height*self.scale))
         surf.blit(self.image,(self.x,self.y))
+
+
+
+class Block():
+    def __init__(self,x,y,width,height,scale):
+        self.x=x
+        self.y=y
+        self.width=width
+        self.height=height
+        self.scale=scale
+        self.angle=0
+        self.dim=(self.x,self.y,self.x+width,self.y+height)
+        self.rect=pg.Rect(x,y,width*scale,height*scale)
+
+    def render(self,surf):
+        pg.draw.rect(surf,(64,128,20),self.rect)
+
+
+
+
